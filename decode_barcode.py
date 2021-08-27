@@ -25,7 +25,7 @@ if result[0].isnumeric():
 data = {'lastname_1': None, 'lastname_2': None, 'name': None, 'id': None, 'RH': None, 'sex': None, 'birth': None}
 
 # 0: ID + Lastname
-split_ = re.split('(\d+)', result[0])
+split_ = re.split(r'(\d+)', result[0])
 data['lastname_1'] = split_[-1]
 data['id'] = split_[-2][-10:]
 
