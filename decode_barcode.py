@@ -2,7 +2,9 @@ import zxing
 import re
 
 reader = zxing.BarCodeReader()
-barcode = reader.decode('cedulas_test/contrast.png')
+barcode = reader.decode('cedulas_test/bar_7.png')
+
+print(barcode.raw.encode("ascii","ignore"))
 
 str_ = str(barcode.raw.encode("ascii","ignore")).replace('x02C', '\n').split()[0]
 str_ = str_.replace("b'", '')
