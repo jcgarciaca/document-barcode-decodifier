@@ -4,7 +4,6 @@ import re
 
 def found_pref(str_, pref):
     idx_ = 0
-    splitted = re.split(r'(\d+)', str_)
     for idx, section in enumerate(str_.split()):
         if section.startswith(pref):
             idx_ = idx + 1
@@ -45,9 +44,9 @@ def find_rh(str_):
 
 
 reader = zxing.BarCodeReader()
-barcode = reader.decode('cedulas_test/bar_2.png')
+barcode = reader.decode('cedulas_test/bar_js.jpg')
 
-str_ = str(barcode.raw.encode("ascii","ignore"))#.replace('x02C', '\n').split()[0]
+str_ = str(barcode.raw.encode("ascii","ignore"))
 str_ = re.sub(r'\s+',' ', str_)
 str_ = str_.replace("b'", '')
 str_ = str_.replace("\\x002\\", '')
