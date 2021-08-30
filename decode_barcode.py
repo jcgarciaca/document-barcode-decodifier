@@ -2,7 +2,7 @@ import zxing
 import re
 
 reader = zxing.BarCodeReader()
-barcode = reader.decode('cedulas_test/bar_7.png')
+barcode = reader.decode('cedulas_test/bar_js.jpg')
 
 print(barcode.raw.encode("ascii","ignore"))
 
