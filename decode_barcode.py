@@ -44,7 +44,7 @@ def find_rh(str_):
 
 
 reader = zxing.BarCodeReader()
-barcode = reader.decode('cedulas_test/bar_js.jpg')
+barcode = reader.decode('cedulas_test/barcode_tmp.jpg')
 
 str_ = str(barcode.raw.encode("ascii","ignore"))
 str_ = re.sub(r'\s+',' ', str_)

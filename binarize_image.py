@@ -9,7 +9,8 @@ def change_contrast(img, level):
     return img.point(contrast)
 
 
-img = cv2.imread('cedulas_test/barcode_js2.jpg', 0)
+img = cv2.imread('cedulas_test/barcode_js2.jpg')
+img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 img = cv2.equalizeHist(img)
 
 img = Image.fromarray(img)
@@ -22,7 +23,7 @@ enhancer = ImageEnhance.Contrast(img)
 factor = 1.2
 img = enhancer.enhance(factor)
 
-img.save('cedulas_test/bar_js.jpg')
+img.save('cedulas_test/bar_js2.jpg')
 
 
 #cv2.imwrite('cedulas_test/bar_5.png', img)
