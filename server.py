@@ -41,28 +41,53 @@ def barcode_inference():
 
 @app.route('/barcode-id-decode', methods=['POST'])
 def barcode_decode():
+    sharpness_lst = [2.0, 2.5, 2.6, 2.8]
+    contrast_lst = [1.2, 0.5, 0.4, 1.6]
     for file in request.files:
         img = np.array(Image.open(request.files[file]))        
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
         img = cv2.equalizeHist(img)
         img = Image.fromarray(img)
-        processed_tmp_path = os.path.join(os.path.join(app.config['UPLOAD_FOLDER'], f'{file}_tmp.jpg'))
-        img.save(processed_tmp_path)
+        equalized_img = os.path.join(os.path.join(app.config['UPLOAD_FOLDER'], f'{file}_equalized.jpg'))
+        img.save(equalized_img)
+
+        found = False
+        for sharpness, contrast in zip(sharpness_lst, contrast_lst):
+            img_output = Image.open(equalized_img)
+            enhancer = ImageEnhance.Sharpness(img_output)
+            img_output = enhancer.enhance(sharpness)
+
+            enhancer = ImageEnhance.Contrast(img_output)
+            img_output = enhancer.enhance(contrast)
+
+            processed_path = os.path.join(app.config['UPLOAD_FOLDER'], f'{file}.jpg')
+            img_output.save(processed_path)
+            resp = decode_fn(processed_path)
+
+            if resp['decode']:
+                found = True
+                break
         
-        enhancer = ImageEnhance.Sharpness(img)
-        factor = 2.0
-        img = enhancer.enhance(factor)
+        # explore
+        if not found:
+            for sharpness in np.arange(1.4, 3, 0.1):
+                for contrast in np.arange(2, 3, 0.1):
+                    img_output = Image.open(equalized_img)
+                    enhancer = ImageEnhance.Sharpness(img_output)
+                    img_output = enhancer.enhance(sharpness)
 
-        enhancer = ImageEnhance.Contrast(img)
-        factor = 1.2
-        img = enhancer.enhance(factor)
+                    enhancer = ImageEnhance.Contrast(img_output)
+                    img_output = enhancer.enhance(contrast)
 
-        processed_path = os.path.join(app.config['UPLOAD_FOLDER'], f'{file}.jpg')
-        img.save(os.path.join(processed_path))
-        resp = decode_fn(processed_path)
+                    processed_path = os.path.join(app.config['UPLOAD_FOLDER'], f'{file}.jpg')
+                    img_output.save(processed_path)
+                    resp = decode_fn(processed_path)
 
-        if not resp['decode']:
-            resp = decode_fn(processed_tmp_path)
+                    if resp['decode']:
+                        found = True
+                        break
+                if found:
+                    break
     
     return Response(json.dumps(resp), mimetype='application/json')
 

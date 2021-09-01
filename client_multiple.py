@@ -13,7 +13,7 @@ URL3 = 'http://127.0.0.1:5000/barcode-id-decode'
 
 found = []
 not_found = []
-for idx in range(1, 356):
+for idx in range(1, 357):
     img = os.path.join(IMGS_DIR, f'IMG_{idx}.jpg')
     print('Image:', img)
     # find fingerprint
