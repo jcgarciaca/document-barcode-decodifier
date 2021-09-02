@@ -22,6 +22,15 @@ files = {'image': open(img, 'rb')}
 r = requests.post(URL1, files=files)
 resp = r.json()
 print(resp)
+
+bbox = resp['bbox']
+fingerprint = cv2.imread(img)
+tmp = fingerprint.copy()
+cv2.rectangle(tmp, (bbox['xmin'], bbox['ymin']), (bbox['xmax'], bbox['ymax']), (0, 255, 0), 3)
+
+fingerprint = fingerprint[bbox['ymin']:bbox['ymax'], bbox['xmin']:bbox['xmax']]
+fingerprint_path = 'sample_fingerprint.jpg'
+cv2.imwrite(fingerprint_path, fingerprint)
 print('-' * 5)
 
 # find barcode
@@ -34,12 +43,15 @@ print('-' * 5)
 
 # decode barcode
 print('Decode barcode:')
-barcode_path = os.path.join(IMGS_DIR, 'barcode.jpg')
+barcode_path = 'barcode.jpg'
 barcode = cv2.imread(img)
 # crop
 bbox = resp['bbox']
 barcode = barcode[bbox['ymin']:bbox['ymax'], bbox['xmin']:bbox['xmax']]
 cv2.imwrite(barcode_path, barcode)
+
+cv2.rectangle(tmp, (bbox['xmin'], bbox['ymin']), (bbox['xmax'], bbox['ymax']), (0, 0, 255), 3)
+cv2.imwrite('detections.jpg', tmp)
 
 files = {'barcode': open(barcode_path, 'rb')}
 r = requests.post(URL3, files=files)
